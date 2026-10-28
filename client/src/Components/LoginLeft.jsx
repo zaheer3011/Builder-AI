@@ -1,12 +1,11 @@
 import React from 'react'
-import logo from '../assets/logo.svg'
 
 const LoginLeft = () => {
   return (
       
-      <div className="flex min-h-screen lg:w-2/5 bg-[url('/assets/bg-img.png')] bg-cover bg-center bg-no-repeat flex-col justify-between p-12 shrink-0 select-none">
+      <div className="flex min-h-screen lg:w-2/5 bg-[url('/bg-img.png')] bg-cover bg-center bg-no-repeat flex-col justify-between p-12 shrink-0 select-none">
         <div className='flex items-center gap-3'>
-            <img src={logo} alt="Logo" className='size-9.5' />
+            <img src={"/logo.svg"} alt="Logo" className='size-9.5' />
             <span className='text-4xl font-medium text-white'>Builder AI</span>
         </div>
 

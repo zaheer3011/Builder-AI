@@ -65,7 +65,7 @@ const Auth = ({ mode }) => {
             <p className='text-sm text-zinc-400'>{isLogin ? "Enter your credentials to access your website builder." : "Get started by entering your registration details."}</p>
           </div>
 
-          {error && <div className='mb-6 p-3 border-red-200 bg-red-50 text-red-700 text-xs rounded'>{error}</div>}
+          {error && <div role='alert' className='mb-6 p-3 border-red-200 bg-red-50 text-red-700 text-xs rounded'>{error}</div>}
 
           <form onSubmit={handleOnSubmit} className='space-y-6'>
             {
