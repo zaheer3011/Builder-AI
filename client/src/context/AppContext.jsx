@@ -223,7 +223,25 @@ export const AppContextProvider = ({children}) => {
     )
 
   return (
-    <AppContext.Provider value={{user, isLoading, login, register}}>
+    <AppContext.Provider 
+    value={{user, 
+    isLoading, 
+    login, 
+    register, 
+    projects, 
+    loadingProjects, 
+    activeProject, 
+    laodingActiveProject, 
+    chatLoading, 
+    generatingProject, 
+    activeFile, 
+    showCode, 
+    setActiveFile, 
+    setShowCode, 
+    loadProjects, 
+    loadProject, 
+    handleGenerate, 
+    handleDelete}}>
         {children}
     </AppContext.Provider>
   )
