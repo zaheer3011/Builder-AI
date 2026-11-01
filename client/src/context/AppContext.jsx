@@ -204,7 +204,7 @@ export const AppContextProvider = ({children}) => {
     )
 
     const handleDelete = useCallback(
-        async (prompt) => {
+        async (id) => {
             if(!user) return;
 
             try {
@@ -241,7 +241,9 @@ export const AppContextProvider = ({children}) => {
     loadProjects, 
     loadProject, 
     handleGenerate, 
-    handleDelete}}>
+    handleDelete,
+    logout
+    }}>
         {children}
     </AppContext.Provider>
   )
