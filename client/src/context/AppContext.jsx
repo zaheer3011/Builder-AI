@@ -134,7 +134,7 @@ export const AppContextProvider = ({children}) => {
             setActiveProject(data);
 
             // Default file selection
-            const files = Object.keys(data.files);
+            const files = Object.keys(data?.files || {});
             if(files.length > 0) {
                 setActiveFile((prev) => {
 
@@ -147,7 +147,7 @@ export const AppContextProvider = ({children}) => {
 
         catch(err) {
 
-            console.error(err.message);  
+            console.error("Failed to load project", err.message);  
             if(!silent) {
                 toast.error("Failed to load project details");
                 navigate("/");
