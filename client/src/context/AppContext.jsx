@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import api from '../api/api';
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,7 @@ export const AppContextProvider = ({children}) => {
     const [projects, setProjects] = useState([]);
     const [loadingProjects, setLoadingProjects] = useState(true);
     const [activeProject, setActiveProject] = useState(null);
-    const [laodingActiveProject, setLoadingActiveProject] = useState(true);
+    const [loadingActiveProject, setLoadingActiveProject] = useState(true);
     const [chatLoading, setChatLoading] = useState(false);
     const [generatingProject, setGeneratingProject] = useState(false);
     const [activeFile, setActiveFile] = useState("/App.js");
@@ -130,7 +130,7 @@ export const AppContextProvider = ({children}) => {
 
         try {
 
-            const { data } = await api.get(`/api/projects${id}`);
+            const { data } = await api.get(`/api/projects/${id}`);
             setActiveProject(data);
 
             // Default file selection
@@ -222,6 +222,63 @@ export const AppContextProvider = ({children}) => {
         }, [user]
     )
 
+    const handleChat = useCallback(
+        async (prompt) => {
+            if(!activeProject || !user) return;
+            setIsLoading(true);
+            
+            try {
+
+                const { data } = await api.post(`/api/projects/${activeProject._id}/chat`, {prompt});
+                setActiveProject(data);
+
+                if(data.errors && data.errors.length > 0) {
+                    toast.error(`${data.errors.length} revision patch(es) failed`)
+                }
+
+                else {
+                    toast.success(`Updated to version ${data.version}`)
+                }
+            }
+
+            catch(err) {
+                console.error("Revison request failed : ", err);
+                toast.error(err?.response?.data?.error || err.message)
+            }
+
+            finally {
+                setChatLoading(false);
+            }
+        }, [activeProject, user]
+    )
+
+    const debouncedSave = useMemo(
+        () => debounce(async (files, id) => {
+            try {
+                await api.put(`/api/projects/${id}/files`, {files})
+            }
+
+            catch(err) {
+                console.error("failed to auto-save files", err);
+                toast.error("Failed to save code modifications")
+            }
+        }, 1000), []
+    )
+
+    useEffect(() => {
+        return () => {
+            debouncedSave.cancel()
+        }
+    }, [debouncedSave])
+
+    const updateProjectFiles = useCallback(
+        async (files) => {
+            if(!activeProject || !user) return;
+            debouncedSave(files, activeProject._id)
+
+        }, [activeProject, user, debouncedSave]
+    )
+
   return (
     <AppContext.Provider 
     value={{user, 
@@ -231,7 +288,7 @@ export const AppContextProvider = ({children}) => {
     projects, 
     loadingProjects, 
     activeProject, 
-    laodingActiveProject, 
+    loadingActiveProject, 
     chatLoading, 
     generatingProject, 
     activeFile, 
@@ -242,7 +299,8 @@ export const AppContextProvider = ({children}) => {
     loadProject, 
     handleGenerate, 
     handleDelete,
-    logout
+    logout,
+    updateProjectFiles
     }}>
         {children}
     </AppContext.Provider>

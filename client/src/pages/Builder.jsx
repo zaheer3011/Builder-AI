@@ -15,7 +15,8 @@ const Builder = () => {
   const [publishing, setPublishing] = useState(false);
   const [publishURL, setPublishURL] = useState(null);
 
-  const {activeProject, loadingActiveProject, activeFile, showCode, setActiveFile, setShowCode, loadProject, logout} = useAppContext();
+  const {activeProject, loadingActiveProject, activeFile, showCode, setActiveFile, setShowCode, loadProject, logout, chatLoading, handleChat} = useAppContext();
+
 
   useEffect(() => {
 
@@ -92,14 +93,24 @@ const Builder = () => {
             {
               leftTab === "chat" ? 
               (
-                <ChatPanel/>
+                <ChatPanel messages={activeProject.messages} onSend={handleChat} loading={chatLoading}/>
               ) : (
-                <FileExplorer/>
+                <FileExplorer files={activeProject.files} activeFile={activeFile} onFileSelect={(path) => {
+                  setActiveFile(path)
+                  setShowCode(true)
+                }}/>
               )
             }
           </div>
+        </div>
 
-
+        {/* Preview Code Area */}
+        <div className='flex-1 overflow-hidden'>
+          {activeProject.status === "pending" || activeProject.status === "generating" || activeProject.status === "failed" ? (
+            <Loading />
+          ) : (
+            <previewPanel />
+          )}
         </div>
       </div>
     </div>
