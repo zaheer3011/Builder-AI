@@ -3,7 +3,7 @@ import React from 'react'
 const Publish = () => {
   return (
     <div>
-      
+      <h1>Publish</h1>
     </div>
   )
 }

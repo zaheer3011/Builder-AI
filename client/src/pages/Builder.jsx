@@ -6,6 +6,12 @@ import BuilderHeader from '../Components/BuilderHeader';
 import { MessageSquareIcon } from 'lucide-react';
 import ChatPanel from '../Components/ChatPanel';
 import FileExplorer from '../Components/FileExplorer';
+import PreviewPanel from '../Components/PreviewPanel';
+import AgentProgressDashboard from '../Components/AgentProgressDashboard';
+import PublishModal from '../Components/PublishModal';
+import api from '../api/api';
+import toast from 'react-hot-toast';
+import { exportProjectZip } from '../utils/exportProject';
 
 const Builder = () => {
 
@@ -24,35 +30,40 @@ const Builder = () => {
     loadProject(id);
   }, [id]);
 
-  useEffect(() => {
-
-    if(!id || !activeProject) return;
-    if(activeProject.status === "pending" || activeProject.status === "generating") {
-      const interval = setInterval(() => {
-        loadProject(id, true)
-      }, 1500)
-
-      return () => clearInterval(interval);
-    }
-
-  }, [id, loadProject, activeProject]);
-
-  if(loadingActiveProject || !activeProject) {
-    return <Loading />
-  }
-
   const handleOpenPreview = () => {
     if(!id) return;
     window.open(`/preview/${id}`, "_blank")
   }
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
 
+    if(!id) return;
+    setPublishing(true);
+
+    try {
+      await api.post(`/api/projects/${id}/publish`);
+      const url = `${window.location.origin}/publish/${id}`;
+      setPublishURL(url);
+      toast.success("Website published successfully!");
+    }
+
+    catch(err) {
+      console.error("Publish failed : ", err);
+      toast.error(err?.response?.data?.error || "Publish Failed")
+    }
+
+    finally {
+      setPublishURL(false);
+    }
   }
 
   const handleDownload = () => {
+    if(!activeProject) return;
+    exportProjectZip(activeProject)
+  }
 
-
+  if(loadingActiveProject || !activeProject) {
+    return <Loading />
   }
 
   return (
@@ -107,12 +118,16 @@ const Builder = () => {
         {/* Preview Code Area */}
         <div className='flex-1 overflow-hidden'>
           {activeProject.status === "pending" || activeProject.status === "generating" || activeProject.status === "failed" ? (
-            <Loading />
+            <AgentProgressDashboard project={activeProject} />
           ) : (
-            <previewPanel />
+            <PreviewPanel project={activeProject}
+            activeFile={activeFile}
+            showCode={showCode} />
           )}
         </div>
       </div>
+
+      {publishURL && <PublishModal publishUrl={publishURL} onClose={() => setPublishURL(null)} />}
     </div>
 
   )

@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import api from '../api/api';
 import toast from 'react-hot-toast'
+import debounce from "lodash.debounce"
 import { useNavigate } from 'react-router-dom';
 
 const AppContext = createContext(undefined);
@@ -45,7 +46,7 @@ export const AppContextProvider = ({children}) => {
 
     useEffect(() => {
         checkSession()
-    }, [checkSession])
+    }, [])
 
     const login = async (email, password) => {
 
@@ -209,9 +210,7 @@ export const AppContextProvider = ({children}) => {
 
             try {
                await api.delete(`/api/project/${id}`);
-               setProjects((prev) => prev.filter((p) => {
-                p._id !== id
-               }))
+               setProjects((prev) => prev.filter((p) => p._id !== id))
                toast.success("Project deleted successfully")
             }
 
@@ -225,7 +224,7 @@ export const AppContextProvider = ({children}) => {
     const handleChat = useCallback(
         async (prompt) => {
             if(!activeProject || !user) return;
-            setIsLoading(true);
+            setChatLoading(true);
             
             try {
 
@@ -267,7 +266,7 @@ export const AppContextProvider = ({children}) => {
 
     useEffect(() => {
         return () => {
-            debouncedSave.cancel()
+            debouncedSave.flush()
         }
     }, [debouncedSave])
 

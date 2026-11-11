@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import {SandpackProvider, useSandpack} from "@codesandbox/sandpack-react"
+import {SandpackCodeEditor, SandpackLayout, SandpackPreview, SandpackProvider, useSandpack} from "@codesandbox/sandpack-react"
 import { useAppContext } from '../context/AppContext';
+import SandpackErrorMonitor from './SandpackErrorMonitor';
+import { detectDependencies } from '../utils/sandpackUtils';
 
 // Watches for file edits inside Sandpack editor and saves changes to DB & live state
 
-function sandPackFileWater({onLiveFilechange}) {
+function SandPackFileWatcher({onLiveFilechange}) {
   const { sandpack } = useSandpack();
   const { files } = sandpack;
   const { activeProject, updateProjectFiles } = useAppContext();
@@ -35,7 +37,7 @@ function sandPackFileWater({onLiveFilechange}) {
     if(hasChanges) {
       updateProjectFiles(updatedFiles)
     }
-  }, [files])
+  }, [files, onLiveFilechange, updateProjectFiles])
 
   return null;
 }
@@ -53,12 +55,26 @@ const PreviewPanel = ({project, activeFile, showCode}) => {
         setLiveFiles(project.files);
     }
 
+    const handleLiveFilesChange = (newFiles) => {
+      setLiveFiles((prev) => {
+        let changed = false;
+        for(const [p, code] of Object.entries(newFiles)) {
+          if(prev[p] !== code) {
+            changed = true;
+            break;
+          }
+        }
+
+        return changed ? newFiles : prev;
+      })
+    }
+
     // Convert liveFiles to Sandpack format
     const sandPackFiles = useMemo(() => {
-        const spFiles = [];
+        const spFiles = {};
 
         for(const [path, content] of Object.entries(liveFiles)) {
-            const fileCode = typeof content === "string" ? : content?.content || "";
+            const fileCode = typeof content === "string" ? content : content?.content || "";
             spFiles[path] = {
                 code : fileCode,
                 active : path === activeFile,
@@ -109,13 +125,41 @@ const PreviewPanel = ({project, activeFile, showCode}) => {
         },
 
         font : {
-          body : "'Urbanist', system-ul, -apple-system, sans-serif",
+          body : "'Urbanist', system-ui, -apple-system, sans-serif",
           mono : "'Geist Mono', ui-monospace, monospace", 
           size : "14px",
           lineHeight : "1.6"
         }
       }}>
 
+      <SandPackFileWatcher onLiveFilechange={handleLiveFilesChange} />
+      <SandpackErrorMonitor onErrorChange={setShowErrorOverlay} />
+      <SandpackLayout 
+      style={{
+        height : "100%",
+        border : "none",
+        borderRadius : 0,
+        background : "transparent"
+      }}>
+
+      {
+        showCode && (
+          <SandpackCodeEditor showTabs showLineNumbers showInlineErrors wrapContent style={{
+            height : "100%",
+            flex : 1,
+            minWidth : 0
+          }} />
+        )
+      }
+
+      <SandpackPreview showNavigator={false} showRefreshButton showOpenInCodeSandbox={false} showSandpackErrorOverlay={showErrorOverlay}
+      style={{
+        height : "100%",
+        flex : showCode ? 1 : 2,
+        minWidth : 0
+      }} />
+
+      </SandpackLayout>
       </SandpackProvider>
     </div>
   )
