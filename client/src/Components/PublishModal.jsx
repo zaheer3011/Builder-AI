@@ -1,7 +1,7 @@
 import { XIcon } from 'lucide-react';
 import React from 'react'
 
-const PublishModal = ({ publishUrl, nClose}) => {
+const PublishModal = ({ publishUrl, onClose}) => {
 
     const handleCopyLink = () => {
         if(!publishUrl) return;

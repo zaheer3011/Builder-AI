@@ -8,16 +8,11 @@ const SandpackErrorMonitor = ({onErrorChange}) => {
 
     useEffect(() => {
 
-        if(!error) {
-            onErrorChange(false);
-            return;
-        }
-
         if(error) {
             const msg = error.message || "";
             const isNetworkError = msg.includes("Failed to fetch") || msg.includes("col.csbops.io") || 
             msg.includes("ERR_CONNECTION_TIMED_OUT") || 
-            msg.includes("net:ERR")
+            msg.includes("net::ERR")
 
             if(isNetworkError) {
                 onErrorChange(false);
