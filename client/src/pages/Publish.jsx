@@ -48,14 +48,14 @@ const Publish = () => {
         </div>
 
         <h1 className='text-lg font-semibold text-zinc-900 mb-1.5'>Website Unavailable</h1>
-        <p className='text-sm text-zinc-500 max-w-sm loading-relaxed mb-6'>{error}</p>
+        <p className='text-sm text-zinc-500 max-w-sm leading-relaxed mb-6'>{error}</p>
         <div className='text-[10px] font-semibold uppercase tracking-widest text-zinc-400'>Builder AI</div>
       </div>
     )
   }
 
   return (
-   <FullPagePreview />
+   <FullPagePreview project={project} />
   )
 }
 

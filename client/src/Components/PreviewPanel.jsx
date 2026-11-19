@@ -26,7 +26,7 @@ function SandPackFileWatcher({onLiveFilechange}) {
     for(const [path, fileObj] of Object.entries(files)) {
       const fileCode = fileObj.code;
       updatedFiles[path] = fileCode;
-      const originalContent = typeof project.files[path] === "string" ? project.files[path] : project.files[path]?.content;
+      const originalContent = typeof project?.files[path] === "string" ? project.files[path] : project.files[path]?.content;
       if(originalContent !== undefined && originalContent !== fileCode) {
         hasChanges = true;
       }

@@ -38,7 +38,6 @@ const Builder = () => {
   const handlePublish = async () => {
 
     if(!id) return;
-    setPublishing(true);
 
     try {
       await api.post(`/api/projects/${id}/publish`);
@@ -50,10 +49,6 @@ const Builder = () => {
     catch(err) {
       console.error("Publish failed : ", err);
       toast.error(err?.response?.data?.error || "Publish Failed")
-    }
-
-    finally {
-      setPublishURL(false);
     }
   }
 
