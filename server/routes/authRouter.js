@@ -5,7 +5,7 @@ const {
   logout,
   me,
 } = require("../controllers/authController");
-const { authMiddleWare } = require("../middleware/AuthMiddleware");
+const authMiddleWare = require("../middleware/AuthMiddleware");
 
 const authRouter = Router();
 
@@ -14,4 +14,4 @@ authRouter.post("/login", login);
 authRouter.post("/logout", logout);
 authRouter.get("/me", authMiddleWare, me);
 
-export default authRouter;
+module.exports = authRouter;

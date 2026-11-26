@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-export function authMiddleWare(req, res, next) {
+function authMiddleWare(req, res, next) {
   const token = req.cookies.token;
 
   if (!token) {
@@ -17,3 +17,5 @@ export function authMiddleWare(req, res, next) {
     res.status(400).json({ error: err.message });
   }
 }
+
+module.exports = authMiddleWare;

@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
-const { default: authRouter } = require("./routes/authRouter");
+const authRouter = require("./routes/authRouter");
+const projectRouter = require("./routes/projectRouter");
 require("dotenv").config();
 
 const app = express();
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
   res.send("Server is Live");
 });
 app.use("/api/auth", authRouter);
+app.use("/api/projects", projectRouter);
 
 // Centralized error Handler
 app.use((err, _req, res, _next) => {

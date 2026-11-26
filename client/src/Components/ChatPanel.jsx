@@ -1,5 +1,6 @@
 import { BotIcon, BotMessageSquareIcon, UserIcon } from "lucide-react";
 import { useEffect, useRef } from "react"
+import PromptInput from "./PromptInput";
 
 const ChatPanel = ({messages, onSend, loading}) => {
 
@@ -65,6 +66,11 @@ const ChatPanel = ({messages, onSend, loading}) => {
             )}
 
             <div ref={bottomRef} />
+        </div>
+
+        {/* Input */}
+        <div className="p-3 border-t border-zinc-200">
+            <PromptInput onSubmit={onSend} loading={loading} placeholder="Ask AI to modify...." autoFocus/>
         </div>
       
     </div>

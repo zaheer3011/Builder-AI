@@ -3,9 +3,9 @@ const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = process.env.JWT_SECRET || "#newsecret";
 
-const setSessionCookies = (req, payload) => {
+const setSessionCookies = (req, res, payload) => {
   const token = jwt.sign(payload, JWT_SEcRET, { expiresIn: "30d" });
-  req.cookie("token", token, {
+  res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -14,7 +14,7 @@ const setSessionCookies = (req, payload) => {
   });
 };
 
-export async function register(req, res) {
+async function register(req, res) {
   try {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
@@ -55,7 +55,7 @@ export async function register(req, res) {
   }
 }
 
-export async function login(req, res) {
+async function login(req, res) {
   try {
     const { email, password } = req.body;
 
@@ -93,7 +93,7 @@ export async function login(req, res) {
   }
 }
 
-export async function logout(req, res) {
+async function logout(req, res) {
   try {
     res.cookie("token", "", {
       httpOnly: true,
@@ -110,7 +110,7 @@ export async function logout(req, res) {
   }
 }
 
-export async function me(req, res) {
+async function me(req, res) {
   try {
     if (!req.user) {
       res.status(401).json({ error: "Not authenticated" });
@@ -130,3 +130,10 @@ export async function me(req, res) {
     res.status(400).json({ error: err.message });
   }
 }
+
+module.exports = {
+  register,
+  login,
+  logout,
+  me,
+};
