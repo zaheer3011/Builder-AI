@@ -206,9 +206,7 @@ async function updateProject(req, res) {
 
     const filesObj = {};
     for (const [path, entry] of Object.entries(project.files)) {
-      if (typeof content === "string") {
-        filesObj[path] = entry.content;
-      }
+      filesObj[path] = entry.content;
     }
 
     res.json({

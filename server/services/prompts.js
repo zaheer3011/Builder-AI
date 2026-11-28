@@ -231,7 +231,7 @@ Good copy makes design feel premium. Follow these rules:
 - Always import React: \`import React from 'react';\`
 - For event handlers, reference functions that are actually defined in scope, or use inline functions: \`onClick={() => {}}\`.`;
 
-export const REVISE_SYSTEM = `${BASE_SYSTEM}
+const REVISE_SYSTEM = `${BASE_SYSTEM}
 
 You are revising an existing React project. You will receive:
 1. A file manifest showing all current files (path, hash, size in bytes)
@@ -261,7 +261,7 @@ CRITICAL RULES for "update" operations:
 
 Be minimal: only touch files that NEED to change.`;
 
-export const FILE_PLAN_SYSTEM = `${BASE_SYSTEM}
+const FILE_PLAN_SYSTEM = `${BASE_SYSTEM}
 
 You are planning which files to create for a React project.
 Respond with a JSON object listing every file needed, including their contract of imports and exports (so different files don't have mismatched component or default export signatures):
@@ -345,4 +345,6 @@ Rules:
 
 module.exports = {
   buildFileCodeSystem,
+  REVISE_SYSTEM,
+  FILE_PLAN_SYSTEM,
 };

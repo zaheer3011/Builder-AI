@@ -1,4 +1,4 @@
-const crypto = require("crypto");
+const crypto = require("node:crypto");
 
 function hashContent(content) {
   return crypto.createHash("md5").update(content).digest("hex").slice(0, 12);
